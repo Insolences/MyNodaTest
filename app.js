@@ -1,41 +1,82 @@
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
+const express = require('express');
+const bodyParser = require("body-parser");
+const authRouter = require('./routes/authRouter');
+const mysql = require('mysql2');
 
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
+const app = express();
+const port = process.env.DB_HOST || 3000
 
-var app = express();
+app.use(bodyParser.urlencoded({extended: true}));
+app.use(bodyParser.json());
+app.use('/auth', authRouter)
 
-// view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'pug');
+const start = async () => {
+  try {
+    await mysql.createConnection({
+      connectionLimit: 5,
+      host: "localhost",
+      user: "root",
+      database: "test",
+      password: "Gjmmjg123"
+    })
+    app.listen(port, () => {
+      console.log(`Example app listening at http://localhost:${port}`)
+    })
+  } catch (e) {
+    console.log('some error', e)
+  }
+}
 
-app.use(logger('dev'));
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+start()
+//
+// const pool = mysql.createPool({
+//   connectionLimit: 5,
+//   host: "localhost",
+//   user: "root",
+//   database: "test",
+//   password: "Gjmmjg123"
+// });
+//
+//
+// app.get('/', function (req, res) {
+//   res.send('Main page')
+// })
+//
+// app.get("/users", function(req, res){
+//   pool.query("SELECT * FROM users", function(err, data) {
+//     if(err) return console.log(err);
+//     res.send(data);
+//   });
+// });
+//
+//
+//
+// app.get('/products/list', function (req, res) {
+//   pool.query("SELECT * FROM products",  function(err, data) {
+//     if(err) return console.log(err);
+//     res.send(data);
+//   });
+// })
 
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
+// app.post('./createProduct',  async function (req, res) {
+//
+//   if(!req.body) return res.sendStatus(400);
+//
+//   const product = {
+//     name: req.body.name,
+//     price: req.body.price,
+//     category: req.body.category_id,
+//     inStock: req.body.inStock
+//   }
+//
+//   pool.query(
+//       "INSERT products(name, price, category_id, inStock) VALUES (?,?,?,?)",
+//       [product.name, product.price, product.category, product.inStock],
+//       function (err,data
+//       ) {
+//     if(err) return console.log(err);
+//         res.send('User create')
+//   })
+//
+// })
 
-// catch 404 and forward to error handler
-app.use(function(req, res, next) {
-  next(createError(404));
-});
-
-// error handler
-app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
-
-  // render the error page
-  res.status(err.status || 500);
-  res.render('error');
-});
-
-module.exports = app;
