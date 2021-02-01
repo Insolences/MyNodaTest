@@ -12,6 +12,7 @@ const authRouter = require('./routes/authRouter');
 
 app.use('/auth', authRouter)
 
+
 db.sequelize.sync().then(()=>{
   app.listen(port, () => {
     console.log(`listening on: http://localhost:${port}`);
