@@ -1,33 +1,25 @@
 const express = require('express');
 const bodyParser = require("body-parser");
-const authRouter = require('./routes/authRouter');
-const mysql = require('mysql2');
+const db = require('./models')
 
 const app = express();
 const port = process.env.DB_HOST || 3000
 
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(bodyParser.json());
+
+const authRouter = require('./routes/authRouter');
+
 app.use('/auth', authRouter)
 
-const start = async () => {
-  try {
-    await mysql.createConnection({
-      connectionLimit: 5,
-      host: "localhost",
-      user: "root",
-      database: "test",
-      password: "Gjmmjg123"
-    })
-    app.listen(port, () => {
-      console.log(`Example app listening at http://localhost:${port}`)
-    })
-  } catch (e) {
-    console.log('some error', e)
-  }
-}
+db.sequelize.sync().then(()=>{
+  app.listen(port, () => {
+    console.log(`listening on: http://localhost:${port}`);
 
-start()
+  })
+})
+
+
 //
 // const pool = mysql.createPool({
 //   connectionLimit: 5,

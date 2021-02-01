@@ -17,7 +17,8 @@ class authController {
     }
     async getUsers(res,req){
         try {
-            res.send('USERS work')
+            console.log('USERS work:', res)
+            // res.send('USERS work')
         }
         catch (e) {
             console.log('ERROR', e)
