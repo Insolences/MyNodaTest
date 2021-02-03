@@ -1,13 +1,13 @@
 const express = require('express');
 const router = express.Router();
 const controller = require('../controllers/productController');
-const roleMiddleware = require('../middleware/roleMiddleware');
-
-//localhost:3000/products
+const authMiddleware = require('../validator/isLoggedInValidator');
+const isAdminValidator = require('../validator/isAdminValidator');
+//localhost:5000/products
 
 router.get("/", controller.getProductList);
-router.post("/add",roleMiddleware(true), controller.addProduct);
-router.put("/edit",roleMiddleware(true), controller.editProduct);
-router.delete("/delete",roleMiddleware(true), controller.deleteProduct);
+router.post("/add",authMiddleware, isAdminValidator, controller.addProduct);
+router.put("/edit",authMiddleware, isAdminValidator, controller.editProduct);
+router.delete("/delete",authMiddleware, isAdminValidator, controller.deleteProduct);
 
 module.exports = router;

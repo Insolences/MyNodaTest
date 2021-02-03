@@ -22,7 +22,7 @@ class ProductController {
         })
         res.send({product: product})
     }
-//check edit!!!!!!!!!!!!!!!!!!
+
     async editProduct(req, res){
         const {product_id, update} = req.body
         for(let element of update){

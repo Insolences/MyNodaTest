@@ -1,13 +1,17 @@
-const express = require('express');
+const express = require("express");
 const router = express.Router();
-const controller = require('../controllers/categoryController');
-const roleMiddleware = require('../middleware/roleMiddleware');
+const controller = require("../controllers/categoryController");
+const isAdminValidator = require("../validator/isAdminValidator");
 
-//localhost:3000/category
+//localhost:5000/category
 
 router.get("/", controller.getCategoryList);
-router.post("/add", roleMiddleware(true), controller.addProductCategories);
-router.put("/edit", roleMiddleware(true), controller.editProductCategories);
-router.delete("/delete", roleMiddleware(true), controller.deleteProductCategories);
+router.post("/add", isAdminValidator, controller.addProductCategories);
+router.put("/edit", isAdminValidator, controller.editProductCategories);
+router.delete(
+  "/delete",
+    isAdminValidator,
+  controller.deleteProductCategories
+);
 
 module.exports = router;
