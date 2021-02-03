@@ -7,7 +7,7 @@ const registerValidator = require("../validator/RegisterValidator");
 
 router.post(
   "/registration",
-  (req, res, next) => registerValidator.validRegister(req, res, next),
+  registerValidator.validRegister,
   controller.registration
 );
 router.post("/login", controller.login);

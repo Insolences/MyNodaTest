@@ -1,8 +1,6 @@
 const db = require("../models");
 const bcrypt = require("bcrypt");
-const saltRounds = 10;
 const jwt = require("jsonwebtoken");
-const { secret } = require("../config/config");
 const authService = require("../service/AuthService");
 
 const generateAccessToken = (id, isAdmin) => {
@@ -10,13 +8,13 @@ const generateAccessToken = (id, isAdmin) => {
     id,
     isAdmin,
   };
-  return jwt.sign(payload, secret, { expiresIn: "24h" });
+  return jwt.sign(payload, process.env.SECRET, { expiresIn: "24h" });
 };
 
 class AuthController {
   async registration(req, res) {
     const { password } = req.body;
-    const hash = bcrypt.hashSync(password, saltRounds);
+    const hash = bcrypt.hashSync(password, process.env.SALT);
 
     try {
       const user = await authService.createUser({
